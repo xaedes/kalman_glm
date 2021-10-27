@@ -24,15 +24,18 @@ namespace kalman_glm {
 
         virtual void reset();
 
-        virtual void update_time_variant(time_type time) = 0;
         virtual void update_time_variant(time_type time, duration_type dt) = 0;
 
         time_type time() const { return m_time; }
         bool has_time() const { return m_has_time; }
+        
+        value_type min_dt() const { return m_min_dt; }
+        void set_min_dt(value_type value) { return m_min_dt = value; }
 
     protected:
         time_type m_time;
         bool m_has_time = false;
+        value_type m_min_dt = 1e-9;
     };
 
 } // namespace kalman_glm

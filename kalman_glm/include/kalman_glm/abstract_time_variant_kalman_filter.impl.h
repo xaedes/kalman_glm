@@ -16,16 +16,17 @@ namespace kalman_glm {
 
     TEMPLATE_DEF void CLASS_NAME::observe(time_type time, const Observation& observation)
     {
+        duration_type dt = static_cast<duration_type>(0);
         if (has_time())
         {
-            auto dt = static_cast<duration_type>(time - m_time);
+            dt = static_cast<duration_type>(time - m_time);
+            dt = abs(dt);
             update_time_variant(time, dt);
         }
-        else
+        if (abs(static_cast<value_type>(dt)) > m_min_dt)
         {
-            update_time_variant(time);
+            KalmanFilter<NumStates, NumObservations, ValueType>::observe(observation);
         }
-        KalmanFilter<NumStates, NumObservations, ValueType>::observe(observation);
         m_time = time;
         m_has_time = true;
     }
@@ -35,11 +36,8 @@ namespace kalman_glm {
         if (has_time())
         {
             auto dt = static_cast<duration_type>(time - m_time);
+            dt = abs(dt);
             update_time_variant(time, dt);
-        }
-        else
-        {
-            update_time_variant(time);
         }
         KalmanFilter<NumStates, NumObservations, ValueType>::predict();
         m_time = time;

@@ -9,34 +9,29 @@ namespace kalman_glm {
         class TimeType = double,
         class DurationType = float
     >
-    struct KalmanKinematicFirstOrder : public AbstractTimeVariantKalmanFilter<2, 1, ValueType, TimeType, DurationType>
+    struct KalmanConst : public AbstractTimeVariantKalmanFilter<1, 1, ValueType, TimeType, DurationType>
     {
-        virtual ~KalmanKinematicFirstOrder() {}
-        KalmanKinematicFirstOrder()
+        virtual ~KalmanConst() {}
+        KalmanConst()
         {
             m_time_invariant_process_uncertainty     = ProcessUncertainty(0);
             m_time_variant_process_uncertainty       = ProcessUncertainty(1);
             m_time_invariant_observation_uncertainty = ObservationUncertainty(0);
             m_time_variant_observation_uncertainty   = ObservationUncertainty(1);
-            set_observation_matrix({
-                {1},
-                {0}
-            });
+            set_observation_matrix(ObservationMatrix(1));
+            set_state_transition_matrix(StateTransitionMatrix(1));
+            
         }
 
         virtual void update_time_variant(time_type time, duration_type dt) override
         {
-            set_state_transition_matrix({
-                {1,0},
-                {dt,1}
-            });
             set_observation_uncertainty(
                 m_time_invariant_observation_uncertainty
-              + abs(dt) * m_time_variant_observation_uncertainty
+              + dt * m_time_variant_observation_uncertainty
             );
             set_process_uncertainty(
                 m_time_invariant_process_uncertainty 
-              + abs(dt) * m_time_variant_process_uncertainty
+              + dt * m_time_variant_process_uncertainty
             );
         }
 
