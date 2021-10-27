@@ -22,7 +22,7 @@ namespace kalman_glm {
 
     TEMPLATE_DEF void CLASS_DECL::reset()
     {
-        m_x *= 0;
+        m_x = State(0);
         m_has_observation = false;
     }
     
@@ -49,12 +49,11 @@ namespace kalman_glm {
           * state()              // (1,NumState)
         );
 
-        // auto observation_matrix_transpose = ObservationMatrix::transpose(observation_matrix());
         auto observation_matrix_transpose = glm::transpose(observation_matrix());
 
         ObservationUncertainty residual_covariance = (   // (NumObs,NumObs)
            (observation_matrix()                         // (NumState,NumObs)
-          * state_transition_matrix())                   // (NumState,NumState)
+          * state_uncertainty())                         // (NumState,NumState)
           * observation_matrix_transpose                 // (NumObs,NumState)
           + observation_uncertainty()                    // (NumObs,NumObs)
         );
