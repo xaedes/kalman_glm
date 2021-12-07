@@ -2,7 +2,8 @@
 
 #include <glm/glm.hpp>
 
-#include "kalman_glm/abstract_pose_rpy_filter.h"
+#include "kalman_glm/abstract_pose_filter.h"
+#include "kalman_glm/pose_rpy.h"
 #include "kalman_glm/kalman_const.h"
 #include "kalman_glm/kalman_kinematic_first_order.h"
 
@@ -13,9 +14,9 @@ namespace kalman_glm {
         class TimeType = double,
         class DurationType = float
     >
-    struct IndependentKalmanXyzRpy : public AbstractPoseRpyFilter<ValueType, TimeType, DurationType>
+    struct IndependentKalmanXyzRpy : public AbstractPoseFilter<PoseRpy, ValueType, TimeType, DurationType>
     {
-        using AbstractPoseRpyFilter::AbstractPoseRpyFilter;
+        using AbstractPoseFilter::AbstractPoseFilter;
 
         virtual ~IndependentKalmanXyzRpy();
 

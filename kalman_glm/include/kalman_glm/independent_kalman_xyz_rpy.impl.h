@@ -13,7 +13,7 @@ namespace kalman_glm {
     
     TEMPLATE_DEF void CLASS_DECL::observe(time_type time, const glm::mat4& observation)
     {
-        AbstractPoseRpyFilter::observe(time, observation);
+        AbstractPoseFilter::observe(time, observation);
     }
     TEMPLATE_DEF void CLASS_DECL::observe(time_type time, const PoseRpy& observation)
     {
@@ -24,8 +24,6 @@ namespace kalman_glm {
         m_kalmanRoll.observe(time, glm::mat1x1(observation.roll_pitch_yaw.x));
         m_kalmanPitch.observe(time, glm::mat1x1(observation.roll_pitch_yaw.y));
         m_kalmanYaw.observe(time, glm::mat1x1(observation.roll_pitch_yaw.z));
-
-        AbstractPoseRpyFilter::observe(time, observation);
     }
 
     TEMPLATE_DEF void CLASS_DECL::predict(time_type time)
@@ -40,7 +38,7 @@ namespace kalman_glm {
 
     TEMPLATE_DEF void CLASS_DECL::reset()
     {
-        AbstractPoseRpyFilter::reset();
+        AbstractPoseFilter::reset();
     }
 
     TEMPLATE_DEF void CLASS_DECL::set_filters_state(const PoseRpy& pose)
@@ -53,9 +51,9 @@ namespace kalman_glm {
         m_kalmanYaw.set_state(glm::mat1x1(pose.roll_pitch_yaw.z));
     }
     
-    TEMPLATE_DEF typename PoseRpy CLASS_DECL::get_filters_state()
+    TEMPLATE_DEF PoseRpy CLASS_DECL::get_filters_state()
     {
-        typename PoseRpy pose;
+        PoseRpy pose;
         pose.position.x = m_kalmanX.state()[0][0];
         pose.position.y = m_kalmanY.state()[0][0];
         pose.position.z = m_kalmanZ.state()[0][0];

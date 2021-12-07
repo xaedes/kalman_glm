@@ -5,14 +5,21 @@ namespace kalman_glm {
     #define TEMPLATE_DEF template<int NumStates, int NumObservations, class ValueType>
     #define CLASS_DECL KalmanFilter<NumStates,NumObservations,ValueType>
     
-    TEMPLATE_DEF CLASS_DECL::KalmanFilter()
+    TEMPLATE_DEF CLASS_DECL::KalmanFilter(
+        State state,
+        StateTransitionMatrix state_transition_matrix,
+        StateUncertainty state_uncertainty,
+        ProcessUncertainty process_uncertainty,
+        ObservationMatrix observation_matrix,
+        ObservationUncertainty observation_uncertainty
+    )
     {
-        m_x = State(0);
-        m_F = StateTransitionMatrix(1);
-        m_P = StateUncertainty(1);
-        m_Q = ProcessUncertainty(1);
-        m_H = ObservationMatrix(0);
-        m_R = ObservationUncertainty(1);
+        m_x = state;
+        m_F = state_transition_matrix;
+        m_P = state_uncertainty;
+        m_Q = process_uncertainty;
+        m_H = observation_matrix;
+        m_R = observation_uncertainty;
         // identity
         m_I = StateUncertainty(1);
     }

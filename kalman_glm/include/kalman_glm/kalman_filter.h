@@ -30,7 +30,14 @@ namespace kalman_glm {
         using Observation            = glm::mat<1               , NumObservations , value_type>;
         using KalmanGain             = glm::mat<NumStates       , NumObservations , value_type>;
 
-        KalmanFilter();
+        KalmanFilter(
+            State state                                    = State(0),
+            StateTransitionMatrix state_transition_matrix  = StateTransitionMatrix(1),
+            StateUncertainty state_uncertainty             = StateUncertainty(1),
+            ProcessUncertainty process_uncertainty         = ProcessUncertainty(1),
+            ObservationMatrix observation_matrix           = ObservationMatrix(1),
+            ObservationUncertainty observation_uncertainty = ObservationUncertainty(1)
+        );
         virtual ~KalmanFilter();
 
         virtual void observe(const Observation& observation);

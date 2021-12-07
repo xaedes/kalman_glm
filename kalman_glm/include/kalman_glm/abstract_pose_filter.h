@@ -1,57 +1,55 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "kalman_glm/pose_rpy.h"
 
 namespace kalman_glm {
 
     template<
+        class PoseType,
         class ValueType = float,
         class TimeType = double,
         class DurationType = float
     >
-    struct AbstractPoseRpyFilter 
+    struct AbstractPoseFilter 
     {
+        using pose_type = PoseType;
         using value_type = ValueType;
         using time_type = TimeType;
         using duration_type = DurationType;
 
 
-        AbstractPoseRpyFilter();
-        // transformation is applied to observations before filtering.
-        // chose a transformation that will result in minimal angles for your use case.
-        // avoid transfomations where some abs(angle) is close to pi/2.
-        AbstractPoseRpyFilter(const glm::mat4& transformation);
-        virtual ~AbstractPoseRpyFilter();
+        AbstractPoseFilter();
+        AbstractPoseFilter(const glm::mat4& transformation);
+        virtual ~AbstractPoseFilter();
 
         bool has_observation() const { return m_has_observation; }
 
         virtual void reset();
         virtual void observe(time_type time, const glm::mat4& observation);
 
-        virtual void observe(time_type time, const PoseRpy& observation);
+        virtual void observe(time_type time, const pose_type& observation) = 0;
         virtual void predict(time_type time) = 0;
 
 
-        PoseRpy   mat4_to_pose(const glm::mat4& mat) const;
-        glm::mat4 pose_to_mat4(const PoseRpy& pose ) const;
+        pose_type  mat4_to_pose(const glm::mat4& mat) const;
+        glm::mat4 pose_to_mat4(const pose_type& pose ) const;
 
         glm::mat4        pose_as_mat4()           const { return pose_to_mat4(state());    }
-        const PoseRpy&   state()                  const { return m_state;                  }
+        const pose_type&  state()                  const { return m_state;                  }
         const glm::mat4& transformation()         const { return m_transformation;         }
         const glm::mat4& transformation_inverse() const { return m_transformation_inverse; }
         bool             enable_transpose()       const { return m_enable_transpose;       }
         
-        void set_state(const PoseRpy& value);
+        void set_state(const pose_type& value);
         void set_transformation(const glm::mat4& value);
         void set_enable_transpose(bool value);
 
     protected:
-        virtual void set_filters_state(const PoseRpy& value) = 0;
-        virtual PoseRpy get_filters_state() = 0;
+        virtual void set_filters_state(const pose_type& value) = 0;
+        virtual pose_type get_filters_state() = 0;
         virtual void reset_filters() = 0;
 
-        PoseRpy m_state;
+        pose_type m_state;
 
         bool m_has_observation = false;
 
@@ -65,4 +63,4 @@ namespace kalman_glm {
 
 } // namespace kalman_glm
 
-#include "kalman_glm/abstract_pose_rpy_filter.impl.h"
+#include "kalman_glm/abstract_pose_filter.impl.h"
